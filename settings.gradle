@@ -1,0 +1,2 @@
+rootProject.name = "RoadDamageDetector"
+include ':app'
