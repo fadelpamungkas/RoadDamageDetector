@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">RoadDamageDetector</string>
+
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+
+    <string name="home">Home</string>
+    <string name="camera">Camera</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="settings">Settings</string>
 </resources>
