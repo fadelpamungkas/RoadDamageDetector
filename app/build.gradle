@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -39,6 +41,22 @@ android {
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     def camerax_version = "1.1.0-alpha04"
+    def retrofit2_version = '2.9.0'
+    def okhttp3_version = '4.9.1'
+    def room_version = "2.3.0"
+
+
+    // room
+    implementation "androidx.room:room-runtime:${room_version}"
+    implementation "androidx.room:room-ktx:${room_version}"
+    kapt "androidx.room:room-compiler:${room_version}"
+    testImplementation "androidx.room:room-testing:${room_version}"
+
+    // retrofit2
+    implementation "com.squareup.retrofit2:retrofit:${retrofit2_version}"
+    implementation "com.squareup.retrofit2:converter-gson:${retrofit2_version}"
+    implementation "com.squareup.okhttp3:okhttp:${okhttp3_version}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${okhttp3_version}"
 
     // CameraX core library using camera2 implementation
     implementation "androidx.camera:camera-camera2:$camerax_version"
