@@ -1,16 +1,31 @@
 package com.example.roaddamagedetector
 
+import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.roaddamagedetector.databinding.ActivityAddRoadBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
+
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -47,5 +62,63 @@ class AddRoadActivity : AppCompatActivity() {
             binding.edPlace.setAdapter(adapter)
         })
 
+        binding.btnImage.setOnClickListener {
+            requestPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
     }
+
+    private fun selectImage(context: Context) {
+        val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        builder.setTitle("Choose your profile picture")
+        builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
+            if (options[item] == "Take Photo") {
+                val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                resultTakePhoto.launch(takePicture)
+            } else if (options[item] == "Choose from Gallery") {
+                val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                resultPickPhoto.launch(pickPhoto)
+            } else if (options[item] == "Cancel") {
+                dialog.dismiss()
+            }
+        })
+        builder.show()
+    }
+
+    private val requestPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) selectImage(this)
+            else Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+        }
+
+    private var resultTakePhoto = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val selectedImage = result.data?.extras?.get("data") as Bitmap?
+            binding.btnImage.setImageBitmap(selectedImage)
+        }
+    }
+
+    private var resultPickPhoto = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val selectedImage: Uri? = result.data?.data
+            val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+            if (selectedImage != null) {
+                val cursor: Cursor? = contentResolver.query(
+                    selectedImage,
+                    filePathColumn, null, null, null
+                )
+                if (cursor != null) {
+                    cursor.moveToFirst()
+                    val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
+                    val picturePath: String = cursor.getString(columnIndex)
+                    binding.btnImage.setImageBitmap(BitmapFactory.decodeFile(picturePath))
+                    Log.d("PickPhoto", selectedImage.path.toString())
+                    Log.d("PickPhoto", picturePath)
+                    cursor.close()
+                }
+            }
+        }
+    }
+
 }

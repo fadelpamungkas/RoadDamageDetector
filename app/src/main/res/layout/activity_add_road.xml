@@ -16,16 +16,20 @@
         android:text="@string/picture"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/btnImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:layout_marginTop="10dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_add_circle_outline_24"
+        android:background="?android:selectableItemBackground"
+        app:layout_constraintTop_toBottomOf="@id/tvImage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvImage"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/add_image" />
 
     <TextView
         style="@style/TvDetail"
@@ -47,49 +51,30 @@
         app:layout_constraintTop_toBottomOf="@id/tvType"
         android:spinnerMode="dropdown"/>
 
-    <TextView
-        style="@style/TvDetail"
-        android:id="@+id/tvDetAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/address"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinnerType"
-        tools:ignore="MissingConstraints" />
-
-    <EditText
-        android:id="@+id/etDetAddress"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_address"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="10dp"
-        android:paddingStart="15dp"
-        android:hint="@string/address"
-        android:background="@drawable/rounded_edittext"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDetAddress">
-    </EditText>
-
-    <TextView
-        style="@style/TvDetail"
-        android:id="@+id/tvCity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/city"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etDetAddress"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@id/spinnerType">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/address"
+            android:background="@drawable/rounded_edittext"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/etCity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvCity">
+        app:layout_constraintTop_toBottomOf="@id/et_address">
         <AutoCompleteTextView
             android:id="@+id/ed_place"
             style="@style/Widget.MaterialComponents.AutoCompleteTextView.FilledBox"
@@ -99,28 +84,21 @@
             android:background="@drawable/rounded_edittext"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        style="@style/TvDetail"
-        android:id="@+id/tvDetNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/note"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/etCity"
-        tools:ignore="MissingConstraints" />
-
-    <EditText
-        android:id="@+id/etDetNote"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_note"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="10dp"
-        android:hint="@string/note"
-        android:paddingStart="15dp"
-        android:background="@drawable/rounded_edittext"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDetNote">
-    </EditText>
+        app:layout_constraintTop_toBottomOf="@id/etCity">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/note"
+            android:background="@drawable/rounded_edittext"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/btnAdd"
@@ -130,7 +108,7 @@
         android:background="@drawable/rounded_edittext"
         android:text="@string/add"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etDetNote"
+        app:layout_constraintTop_toBottomOf="@id/et_note"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
