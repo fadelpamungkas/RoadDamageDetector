@@ -2,8 +2,8 @@ package com.example.roaddamagedetector.data
 
 import com.example.roaddamagedetector.data.local.LocalSource
 import com.example.roaddamagedetector.data.remote.ApiResponse
-import com.example.roaddamagedetector.data.remote.DataKabupatenResponse
-import com.example.roaddamagedetector.data.remote.DataProvinsiResponse
+import com.example.roaddamagedetector.data.remote.PlaceItem
+import com.example.roaddamagedetector.data.remote.PlaceResponse
 import com.example.roaddamagedetector.data.remote.RemoteSource
 import com.example.roaddamagedetector.utils.DataMapper
 import kotlinx.coroutines.flow.Flow
@@ -24,43 +24,6 @@ class AppRepository(
             }
     }
 
-    fun getProvinsi(): Flow<Resource<List<DataProvinsi>>> =
-        object: NetworkBoundResource<List<DataProvinsi>, List<DataProvinsiResponse>>() {
-            override fun loadFromDB(): Flow<List<DataProvinsi>> {
-                return localSource.getProvinsi().map {
-                    DataMapper.mapEntitiesToModelProvinsi(it)
-                }
-            }
+    suspend fun getPlace(place: String): Flow<List<PlaceItem>> = remoteSource.getPlace(place)
 
-            override fun shouldFetch(data: List<DataProvinsi>?): Boolean =
-                true
-
-            override suspend fun createCall(): Flow<ApiResponse<List<DataProvinsiResponse>>> =
-                remoteSource.getProvinsi()
-
-            override suspend fun saveCallResult(data: List<DataProvinsiResponse>) {
-                localSource.insertProvinsi(DataMapper.mapResponsesToEntitiesProvinsi(data))
-            }
-
-        }.asFlow()
-
-    fun getKabupaten(id: Int): Flow<Resource<List<DataKabupaten>>> =
-        object: NetworkBoundResource<List<DataKabupaten>, List<DataKabupatenResponse>>() {
-            override fun loadFromDB(): Flow<List<DataKabupaten>> {
-                return localSource.getKabupaten(id).map {
-                    DataMapper.mapEntitiesToModelKabupaten(it)
-                }
-            }
-
-            override fun shouldFetch(data: List<DataKabupaten>?): Boolean =
-                true
-
-            override suspend fun createCall(): Flow<ApiResponse<List<DataKabupatenResponse>>> =
-                remoteSource.getKabupaten(id)
-
-            override suspend fun saveCallResult(data: List<DataKabupatenResponse>) {
-                localSource.insertKabupaten(DataMapper.mapResponsesToEntitiesKabupaten(data))
-            }
-
-        }.asFlow()
 }

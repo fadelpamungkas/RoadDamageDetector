@@ -8,6 +8,23 @@
     android:background="@color/black"
     tools:context=".AddRoadActivity">
 
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="Provinsi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <AutoCompleteTextView
+            android:id="@+id/ed_place"
+            style="@style/Widget.MaterialComponents.AutoCompleteTextView.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Provinsi" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <TextView
         style="@style/TvDetail"
         android:id="@+id/tvType"
@@ -112,6 +129,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDetNote">
     </EditText>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

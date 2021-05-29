@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiConfig {
     companion object{
-        private const val BASE_URL = "https://ibnux.github.io/"
+        private const val BASE_URL = "https://api.mapbox.com/geocoding/v5/"
 
         fun getApiService(): ApiRequest{
             val loggingInterceptor =

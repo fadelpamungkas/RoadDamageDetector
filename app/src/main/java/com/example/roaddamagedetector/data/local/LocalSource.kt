@@ -1,6 +1,5 @@
 package com.example.roaddamagedetector.data.local
 
-import androidx.lifecycle.LiveData
 import kotlinx.coroutines.flow.Flow
 
 class LocalSource private constructor(

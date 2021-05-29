@@ -2,11 +2,15 @@ package com.example.roaddamagedetector.data.remote
 
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiRequest {
-    @GET("data-indonesia/propinsi.json")
-    suspend fun getProvinsi(): List<DataProvinsiResponse>
 
-    @GET("data-indonesia/kabupaten/{id}.json")
-    suspend fun getKabupaten(@Path("id") id: Int): List<DataKabupatenResponse>
+    @GET("mapbox.places/{place}.json")
+    suspend fun getPlace(
+        @Path("place") place: String,
+        @Query("access_token") accessToken: String,
+        @Query("autocomplete") autoComplete: Boolean = true
+    ): PlaceResponse
+
 }

@@ -1,12 +1,13 @@
 package com.example.roaddamagedetector.data.remote
 
 import android.util.Log
+import com.example.roaddamagedetector.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class RemoteSource() {
+class RemoteSource {
 
     companion object{
         @Volatile
@@ -20,35 +21,15 @@ class RemoteSource() {
 
     private var apiService = ApiConfig.getApiService()
 
-    suspend fun getProvinsi(): Flow<ApiResponse<List<DataProvinsiResponse>>> {
+    suspend fun getPlace(place: String): Flow<List<PlaceItem>> {
         return flow {
             try {
-                val response = apiService.getProvinsi()
-                if (response.isNotEmpty()) {
-                    emit(ApiResponse.Success(response))
-                } else {
-                    emit(ApiResponse.Empty)
-                }
+                val response = apiService.getPlace(place, BuildConfig.API_KEY).features
+                emit(response)
             } catch (e: Exception) {
-                emit(ApiResponse.Error(e.toString()))
                 Log.e("RemoteSource", e.toString())
             }
         }.flowOn(Dispatchers.IO)
     }
 
-    suspend fun getKabupaten(id: Int): Flow<ApiResponse<List<DataKabupatenResponse>>> {
-        return flow {
-            try {
-                val response = apiService.getKabupaten(id)
-                if (response.isNotEmpty()) {
-                    emit(ApiResponse.Success(response))
-                } else {
-                    emit(ApiResponse.Empty)
-                }
-            } catch (e: Exception) {
-                emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteSource", e.toString())
-            }
-        }.flowOn(Dispatchers.IO)
-    }
 }
