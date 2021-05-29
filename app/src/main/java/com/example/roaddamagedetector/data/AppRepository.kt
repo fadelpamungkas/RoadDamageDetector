@@ -1,13 +1,9 @@
 package com.example.roaddamagedetector.data
 
 import com.example.roaddamagedetector.data.local.LocalSource
-import com.example.roaddamagedetector.data.remote.ApiResponse
 import com.example.roaddamagedetector.data.remote.PlaceItem
-import com.example.roaddamagedetector.data.remote.PlaceResponse
 import com.example.roaddamagedetector.data.remote.RemoteSource
-import com.example.roaddamagedetector.utils.DataMapper
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class AppRepository(
     private val remoteSource: RemoteSource,

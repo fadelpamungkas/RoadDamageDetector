@@ -1,15 +1,13 @@
 package com.example.roaddamagedetector
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.roaddamagedetector.databinding.ActivityAddRoadBinding
-import com.example.roaddamagedetector.viewmodel.ViewModelFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch

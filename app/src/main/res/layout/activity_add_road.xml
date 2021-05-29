@@ -8,22 +8,24 @@
     android:background="@color/black"
     tools:context=".AddRoadActivity">
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
+    <TextView
+        style="@style/TvDetail"
+        android:id="@+id/tvImage"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:hint="Provinsi"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/picture"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-        <AutoCompleteTextView
-            android:id="@+id/ed_place"
-            style="@style/Widget.MaterialComponents.AutoCompleteTextView.FilledBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Provinsi" />
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/btnImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvImage"/>
 
     <TextView
         style="@style/TvDetail"
@@ -31,9 +33,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/type"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnImage"
         tools:ignore="MissingConstraints" />
 
     <Spinner
@@ -47,60 +49,21 @@
 
     <TextView
         style="@style/TvDetail"
-        android:id="@+id/tvProvince"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/province"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinnerType"
-        tools:ignore="MissingConstraints" />
-
-    <Spinner
-        android:id="@+id/spinnerProvince"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvProvince"
-        android:spinnerMode="dropdown"/>
-
-    <TextView
-        style="@style/TvDetail"
-        android:id="@+id/tvCity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/city"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinnerProvince"
-        tools:ignore="MissingConstraints" />
-
-    <Spinner
-        android:id="@+id/spinnerCity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvCity"
-        android:spinnerMode="dropdown"/>
-
-    <TextView
-        style="@style/TvDetail"
         android:id="@+id/tvDetAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/address"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinnerCity"
+        app:layout_constraintTop_toBottomOf="@id/spinnerType"
         tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/etDetAddress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_marginTop="10dp"
+        android:paddingStart="15dp"
         android:hint="@string/address"
         android:background="@drawable/rounded_edittext"
         app:layout_constraintEnd_toEndOf="parent"
@@ -110,24 +73,64 @@
 
     <TextView
         style="@style/TvDetail"
+        android:id="@+id/tvCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/city"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etDetAddress"
+        tools:ignore="MissingConstraints" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etCity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCity">
+        <AutoCompleteTextView
+            android:id="@+id/ed_place"
+            style="@style/Widget.MaterialComponents.AutoCompleteTextView.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/city"
+            android:background="@drawable/rounded_edittext"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        style="@style/TvDetail"
         android:id="@+id/tvDetNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/note"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/etDetAddress"
+        app:layout_constraintTop_toBottomOf="@id/etCity"
         tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/etDetNote"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_marginTop="10dp"
         android:hint="@string/note"
+        android:paddingStart="15dp"
         android:background="@drawable/rounded_edittext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDetNote">
     </EditText>
+
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rounded_edittext"
+        android:text="@string/add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etDetNote"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

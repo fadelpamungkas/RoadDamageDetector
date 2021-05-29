@@ -1,8 +1,5 @@
 package com.example.roaddamagedetector.utils
 
-import com.example.roaddamagedetector.data.local.DataKabupatenEntity
-import com.example.roaddamagedetector.data.local.DataProvinsiEntity
-
 object DataMapper {
 //    fun mapResponsesToEntities(input: MovieResponse): MovieEntity {
 //        return MovieEntity(

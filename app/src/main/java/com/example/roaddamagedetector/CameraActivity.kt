@@ -1,23 +1,25 @@
 package com.example.roaddamagedetector
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import java.util.concurrent.Executors
-import androidx.camera.core.*
-import androidx.camera.lifecycle.ProcessCameraProvider
 import com.example.roaddamagedetector.databinding.ActivityCameraBinding
 import java.io.File
-import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class CameraActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
@@ -129,6 +131,7 @@ class CameraActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:
         IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 startCamera()

@@ -10,7 +10,9 @@ interface ApiRequest {
     suspend fun getPlace(
         @Path("place") place: String,
         @Query("access_token") accessToken: String,
-        @Query("autocomplete") autoComplete: Boolean = true
+        @Query("autocomplete") autoComplete: Boolean = true,
+        @Query("country") country: String = "id",
+        @Query("types") type: String = "region,locality,place"
     ): PlaceResponse
 
 }
