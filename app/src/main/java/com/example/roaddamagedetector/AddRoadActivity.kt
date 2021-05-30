@@ -36,6 +36,8 @@ class AddRoadActivity : AppCompatActivity() {
         binding = ActivityAddRoadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.title = "Add Data"
+
         val viewModel: AddRoadViewModel by viewModels()
 
         binding.edPlace.addTextChangedListener ( object : TextWatcher {
@@ -63,7 +65,7 @@ class AddRoadActivity : AppCompatActivity() {
         })
 
         binding.btnImage.setOnClickListener {
-            requestPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            selectImage(this)
         }
 
     }
@@ -71,25 +73,35 @@ class AddRoadActivity : AppCompatActivity() {
     private fun selectImage(context: Context) {
         val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder.setTitle("Choose your profile picture")
+        builder.setTitle("Add Image")
+
         builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
-            if (options[item] == "Take Photo") {
-                val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                resultTakePhoto.launch(takePicture)
-            } else if (options[item] == "Choose from Gallery") {
-                val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                resultPickPhoto.launch(pickPhoto)
-            } else if (options[item] == "Cancel") {
-                dialog.dismiss()
+            when (options[item]) {
+                "Take Photo" ->
+                    requestPermissionCamera.launch(Manifest.permission.CAMERA)
+                "Choose from Gallery" ->
+                    requestPermissionGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                else ->
+                    dialog.dismiss()
             }
         })
         builder.show()
     }
 
-    private val requestPermission =
+    private val requestPermissionGallery =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) selectImage(this)
-            else Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+            if (isGranted)
+                resultPickPhoto.launch(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
+            else
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+        }
+
+    private val requestPermissionCamera =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted)
+                resultTakePhoto.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+            else
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
         }
 
     private var resultTakePhoto = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
