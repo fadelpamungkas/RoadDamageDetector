@@ -3,8 +3,8 @@ package com.example.roaddamagedetector.viewmodel
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.roaddamagedetector.AddRoadActivity
-import com.example.roaddamagedetector.AddRoadViewModel
+import com.example.roaddamagedetector.ui.AddRoadActivity
+import com.example.roaddamagedetector.ui.AddRoadViewModel
 import com.example.roaddamagedetector.data.AppRepository
 import com.example.roaddamagedetector.di.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi

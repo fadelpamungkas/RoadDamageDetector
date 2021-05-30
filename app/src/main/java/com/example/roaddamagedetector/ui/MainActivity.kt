@@ -1,6 +1,5 @@
-package com.example.roaddamagedetector
+package com.example.roaddamagedetector.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,6 +8,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.roaddamagedetector.R
 import com.example.roaddamagedetector.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

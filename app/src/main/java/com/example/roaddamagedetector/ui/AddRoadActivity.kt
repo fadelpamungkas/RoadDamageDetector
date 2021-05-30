@@ -1,4 +1,4 @@
-package com.example.roaddamagedetector
+package com.example.roaddamagedetector.ui
 
 import android.Manifest
 import android.app.Activity

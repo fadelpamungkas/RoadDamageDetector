@@ -12,15 +12,15 @@ class LocalSource private constructor(
             INSTANCE ?: LocalSource(appDAO)
     }
 
-    fun insertProvinsi(provinsi: List<DataProvinsiEntity>) =
-        appDAO.insertProvinsi(provinsi)
+    fun insert(data: RoadDataEntity) =
+        appDAO.insert(data)
 
-    fun insertKabupaten(kabupaten: List<DataKabupatenEntity>) =
-        appDAO.insertKabupaten(kabupaten)
+    fun delete(data: RoadDataEntity) =
+        appDAO.delete(data)
 
-    fun getProvinsi(): Flow<List<DataProvinsiEntity>> =
-        appDAO.getProvinsi()
+    fun getAllRoadData(): Flow<List<RoadDataEntity>> =
+        appDAO.getAllRoadData()
 
-    fun getKabupaten(id: Int): Flow<List<DataKabupatenEntity>> =
-        appDAO.getKabupaten(id)
+    fun getRoadDataById(id: Int): Flow<RoadDataEntity> =
+        appDAO.getRoadDataById(id)
 }

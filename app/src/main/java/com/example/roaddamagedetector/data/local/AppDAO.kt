@@ -1,23 +1,20 @@
 package com.example.roaddamagedetector.data.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AppDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertKabupaten(data: List<DataKabupatenEntity>)
+    fun insert(data: RoadDataEntity)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertProvinsi(data: List<DataProvinsiEntity>)
+    @Delete
+    fun delete(data: RoadDataEntity)
 
-    @Query("SELECT * FROM dataprovinsi")
-    fun getProvinsi(): Flow<List<DataProvinsiEntity>>
+    @Query("SELECT * FROM roaddata")
+    fun getAllRoadData(): Flow<List<RoadDataEntity>>
 
-    @Query("SELECT * FROM datakabupaten WHERE id = :id")
-    fun getKabupaten(id: Int): Flow<List<DataKabupatenEntity>>
+    @Query("SELECT * FROM roaddata WHERE id = :id")
+    fun getRoadDataById(id: Int): Flow<RoadDataEntity>
 
 }

@@ -1,4 +1,4 @@
-package com.example.roaddamagedetector
+package com.example.roaddamagedetector.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -14,6 +14,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.roaddamagedetector.R
 import com.example.roaddamagedetector.databinding.ActivityCameraBinding
 import java.io.File
 import java.text.SimpleDateFormat

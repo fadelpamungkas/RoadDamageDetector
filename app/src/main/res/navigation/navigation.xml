@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.roaddamagedetector.HomeFragment"
+        android:name="com.example.roaddamagedetector.ui.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
 
     <activity
         android:id="@+id/navigation_addRoad"
-        android:name="com.example.roaddamagedetector.AddRoadActivity"
+        android:name="com.example.roaddamagedetector.ui.AddRoadActivity"
         android:label="Add Road"
         tools:layout="@layout/activity_add_road" />
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.roaddamagedetector.ProfileFragment"
+        android:name="com.example.roaddamagedetector.ui.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>
