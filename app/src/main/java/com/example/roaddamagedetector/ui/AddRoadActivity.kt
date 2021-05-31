@@ -175,16 +175,11 @@ class AddRoadActivity : AppCompatActivity() {
     private fun showSearchResults(results: List<Classifier.Recognition>) {
 
         // Create caption, the unclean way
-        if (results.size > 1) {
             val resultString = results
-                .subList(1, results.size)
                 .foldIndexed("") { index, acc, recognition ->
-                    "${acc}${index + 2}. ${recognition.formattedString()}\n"
+                    "${acc}${index}. ${recognition.formattedString()}\n"
                 }
             binding.tvResultData.text = resultString
-        }
-
-        binding.tvResultData.text = "1. ${results.first().formattedString()}"
     }
 
 }
