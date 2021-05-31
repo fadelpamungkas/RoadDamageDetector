@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +23,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.roaddamagedetector.databinding.ActivityAddRoadBinding
+import com.example.roaddamagedetector.tflite.Classifier
+import com.example.roaddamagedetector.tflite.ClassifierHelper
+import com.example.roaddamagedetector.tflite.ClassifierSpec
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -31,6 +36,17 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 class AddRoadActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddRoadBinding
+
+    private var inputBitmap: Bitmap? = null
+    private val classifier by lazy {
+        ClassifierHelper(this, ClassifierSpec(
+            Classifier.Model.QUANTIZED_EFFICIENTNET,
+            Classifier.Device.CPU,
+            1
+        )
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddRoadBinding.inflate(layoutInflater)
@@ -108,6 +124,9 @@ class AddRoadActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             val selectedImage = result.data?.extras?.get("data") as Bitmap?
             binding.btnImage.setImageBitmap(selectedImage)
+
+            val validBitmap = selectedImage ?: throw NullPointerException("Bitmap is null!")
+            detectObject(validBitmap)
         }
     }
 
@@ -124,13 +143,48 @@ class AddRoadActivity : AppCompatActivity() {
                     cursor.moveToFirst()
                     val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
                     val picturePath: String = cursor.getString(columnIndex)
-                    binding.btnImage.setImageBitmap(BitmapFactory.decodeFile(picturePath))
-                    Log.d("PickPhoto", selectedImage.path.toString())
-                    Log.d("PickPhoto", picturePath)
+                    val bitmap = BitmapFactory.decodeFile(picturePath)
+                    binding.btnImage.setImageBitmap(bitmap)
                     cursor.close()
+
+                    val validBitmap = bitmap ?: throw NullPointerException("Bitmap is null!")
+                    detectObject(validBitmap)
                 }
             }
         }
+    }
+
+    private fun detectObject(bitmap: Bitmap) {
+
+        // Where the magic happen
+        classifier.execute(
+            bitmap = bitmap,
+            onError = {
+                Toast.makeText(
+                    this,
+                    "Error regarding GPU support for Quant models[CHAR_LIMIT=60]",
+                    Toast.LENGTH_LONG
+                ).show()
+            },
+            onResult = {
+                showSearchResults(it)
+            }
+        )
+    }
+
+    private fun showSearchResults(results: List<Classifier.Recognition>) {
+
+        // Create caption, the unclean way
+        if (results.size > 1) {
+            val resultString = results
+                .subList(1, results.size)
+                .foldIndexed("") { index, acc, recognition ->
+                    "${acc}${index + 2}. ${recognition.formattedString()}\n"
+                }
+            binding.tvResultData.text = resultString
+        }
+
+        binding.tvResultData.text = "1. ${results.first().formattedString()}"
     }
 
 }

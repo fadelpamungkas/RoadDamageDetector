@@ -11,6 +11,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        mlModelBinding true
     }
 
     defaultConfig {
@@ -51,6 +52,13 @@ dependencies {
     def lifecycle_version = "2.3.1"
 
 
+    // Tflite
+    final tfliteVersion = '0.0.0-nightly'
+    implementation "org.tensorflow:tensorflow-lite:2.4.0"
+    implementation "org.tensorflow:tensorflow-lite-gpu:2.3.0"
+    implementation "org.tensorflow:tensorflow-lite-support:0.1.0"
+
+    implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
 
     // room
     implementation "androidx.room:room-runtime:${room_version}"

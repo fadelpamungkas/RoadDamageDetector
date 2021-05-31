@@ -37,15 +37,14 @@
             app:layout_constraintTop_toBottomOf="@id/tvImage" />
 
         <TextView
+            android:id="@+id/tvResultData"
             style="@style/TvDetail"
-            android:id="@+id/tvType"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/type"
             android:layout_marginTop="20dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnImage"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_address"
@@ -54,7 +53,7 @@
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvType">
+            app:layout_constraintTop_toBottomOf="@id/tvResultData">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/ed_address"
                 android:layout_width="match_parent"
