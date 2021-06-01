@@ -2,6 +2,7 @@ package com.example.roaddamagedetector.ui
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -13,8 +14,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,10 +25,12 @@ import com.example.roaddamagedetector.databinding.ActivityAddRoadBinding
 import com.example.roaddamagedetector.tflite.Classifier
 import com.example.roaddamagedetector.tflite.ClassifierHelper
 import com.example.roaddamagedetector.tflite.ClassifierSpec
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.Month
+import java.util.*
 
 
 @FlowPreview
@@ -38,6 +39,9 @@ class AddRoadActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddRoadBinding
 
     private var inputBitmap: Bitmap? = null
+
+    private var cal = Calendar.getInstance()
+
     private val classifier by lazy {
         ClassifierHelper(this, ClassifierSpec(
             Classifier.Model.QUANTIZED_EFFICIENTNET,
@@ -56,6 +60,17 @@ class AddRoadActivity : AppCompatActivity() {
 
         val viewModel: AddRoadViewModel by viewModels()
 
+        val dateSetListener =
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                cal.set(Calendar.YEAR, year)
+                cal.set(Calendar.MONTH, monthOfYear)
+                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                val myFormat = "dd/MM/yyyy"
+                val sdf = SimpleDateFormat(myFormat, Locale.US)
+                binding.tvDate.text = sdf.format(cal.time)
+            }
+
         binding.edPlace.addTextChangedListener ( object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -69,6 +84,14 @@ class AddRoadActivity : AppCompatActivity() {
                 }
             }
         })
+        
+        binding.btnDate.setOnClickListener {
+            DatePickerDialog(this,
+                dateSetListener,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)).show()
+        }
 
         viewModel.searchResult.observe(this, { placesItem ->
             val placesName = arrayListOf<String?>()
@@ -177,9 +200,10 @@ class AddRoadActivity : AppCompatActivity() {
         // Create caption, the unclean way
             val resultString = results
                 .foldIndexed("") { index, acc, recognition ->
-                    "${acc}${index}. ${recognition.formattedString()}\n"
+                    "${acc}${index+1}. ${recognition.formattedString()}\n"
                 }
             binding.tvResultData.text = resultString
     }
+
 
 }

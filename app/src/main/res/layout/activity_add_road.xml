@@ -46,6 +46,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <TextView
+            style="@style/TvDate"
+            android:id="@+id/tvDate"
+            android:layout_width="150dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:background="@drawable/rounded_edittext"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvResultData">
+        </TextView>
+
+        <Button
+            android:id="@+id/btnDate"
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/ic_baseline_calendar_today_24"
+            app:layout_constraintTop_toBottomOf="@id/tvResultData"
+            app:layout_constraintStart_toEndOf="@id/tvDate"/>
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_address"
             android:layout_width="match_parent"
@@ -53,7 +76,7 @@
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvResultData">
+            app:layout_constraintTop_toBottomOf="@id/tvDate">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/ed_address"
                 android:layout_width="match_parent"
