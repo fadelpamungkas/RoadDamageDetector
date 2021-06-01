@@ -8,6 +8,9 @@ interface AppDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(data: RoadDataEntity)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertList(data: List<RoadDataEntity>)
+
     @Delete
     fun delete(data: RoadDataEntity)
 

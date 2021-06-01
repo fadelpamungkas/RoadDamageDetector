@@ -18,6 +18,9 @@ data class RoadDataEntity(
     @ColumnInfo(name = "photo")
     val photo: String,
 
+    @ColumnInfo(name = "date")
+    val date: String,
+
     @ColumnInfo(name = "address")
     val address: String,
 

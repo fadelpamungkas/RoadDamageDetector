@@ -19,11 +19,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.roaddamagedetector.R
+import com.example.roaddamagedetector.data.local.RoadDataEntity
 import com.example.roaddamagedetector.databinding.ActivityAddRoadBinding
 import com.example.roaddamagedetector.tflite.DetectionResult
 import com.example.roaddamagedetector.tflite.imageclassification.Classifier
 import com.example.roaddamagedetector.tflite.imageclassification.ClassifierHelper
 import com.example.roaddamagedetector.tflite.imageclassification.ClassifierSpec
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -89,14 +92,6 @@ class AddRoadActivity : AppCompatActivity() {
             }
         })
 
-        binding.btnDate.setOnClickListener {
-            DatePickerDialog(this,
-                dateSetListener,
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)).show()
-        }
-
         viewModel.searchResult.observe(this, { placesItem ->
             val placesName = arrayListOf<String?>()
             placesItem.map {
@@ -107,10 +102,58 @@ class AddRoadActivity : AppCompatActivity() {
             binding.edPlace.setAdapter(adapter)
         })
 
+        binding.btnDate.setOnClickListener {
+            DatePickerDialog(this,
+                dateSetListener,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
         binding.btnImage.setOnClickListener {
             selectImage(this)
         }
 
+        binding.btnAdd.setOnClickListener {
+            if(isDataValid()) {
+                val data = RoadDataEntity(
+                    1, "fadel", "email",
+                    binding.btnImage.drawable.toString(),
+                    binding.tvDate.toString(),
+                    binding.etAddress.editText.toString(),
+                    binding.etCity.editText.toString(),
+                    binding.etNote.editText.toString(),
+                )
+                viewModel.insertSingleData(data)
+            }
+        }
+
+    }
+
+    private fun isDataValid(): Boolean {
+        with(binding) {
+            if (btnImage.drawable.equals(null) || btnImage.drawable.equals(R.drawable.add_image)){
+                Toast.makeText(this@AddRoadActivity, "Photo can't be blank", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            if (tvDate.text == null) {
+                Toast.makeText(this@AddRoadActivity, "Date can't be blank", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            if (etAddress.editText == null) {
+                Toast.makeText(this@AddRoadActivity, "Address can't be blank", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            if (etCity.editText == null) {
+                Toast.makeText(this@AddRoadActivity, "City can't be blank", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            if (etNote.editText == null) {
+                Toast.makeText(this@AddRoadActivity, "Note can't be blank", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            return true
+        }
     }
 
     private fun selectImage(context: Context) {

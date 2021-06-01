@@ -15,6 +15,9 @@ class LocalSource private constructor(
     fun insert(data: RoadDataEntity) =
         appDAO.insert(data)
 
+    fun insertList(data: List<RoadDataEntity>) =
+        appDAO.insertList(data)
+
     fun delete(data: RoadDataEntity) =
         appDAO.delete(data)
 
