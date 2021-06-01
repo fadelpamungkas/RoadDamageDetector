@@ -2,16 +2,20 @@ package com.example.roaddamagedetector.ui
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,9 +29,15 @@ import com.example.roaddamagedetector.tflite.imageclassification.Classifier
 import com.example.roaddamagedetector.tflite.imageclassification.ClassifierHelper
 import com.example.roaddamagedetector.tflite.imageclassification.ClassifierSpec
 import kotlinx.coroutines.Dispatchers
+import com.example.roaddamagedetector.tflite.Classifier
+import com.example.roaddamagedetector.tflite.ClassifierHelper
+import com.example.roaddamagedetector.tflite.ClassifierSpec
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.Month
+import java.util.*
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.vision.detector.ObjectDetector
 
@@ -36,6 +46,10 @@ import org.tensorflow.lite.task.vision.detector.ObjectDetector
 @ExperimentalCoroutinesApi
 class AddRoadActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddRoadBinding
+
+    private var inputBitmap: Bitmap? = null
+
+    private var cal = Calendar.getInstance()
 
     private val classifier by lazy {
         ClassifierHelper(this, ClassifierSpec(
@@ -60,6 +74,17 @@ class AddRoadActivity : AppCompatActivity() {
 
         val viewModel: AddRoadViewModel by viewModels()
 
+        val dateSetListener =
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                cal.set(Calendar.YEAR, year)
+                cal.set(Calendar.MONTH, monthOfYear)
+                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                val myFormat = "dd/MM/yyyy"
+                val sdf = SimpleDateFormat(myFormat, Locale.US)
+                binding.tvDate.text = sdf.format(cal.time)
+            }
+
         binding.edPlace.addTextChangedListener ( object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -74,6 +99,14 @@ class AddRoadActivity : AppCompatActivity() {
             }
         })
 
+        binding.btnDate.setOnClickListener {
+            DatePickerDialog(this,
+                dateSetListener,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
         viewModel.searchResult.observe(this, { placesItem ->
             val placesName = arrayListOf<String?>()
             placesItem.map {
@@ -87,6 +120,7 @@ class AddRoadActivity : AppCompatActivity() {
         binding.btnImage.setOnClickListener {
             selectImage(this)
         }
+
     }
 
     private fun selectImage(context: Context) {
@@ -126,9 +160,10 @@ class AddRoadActivity : AppCompatActivity() {
     private var resultTakePhoto = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val selectedImage = result.data?.extras?.get("data") as Bitmap?
-            val validBitmap = selectedImage ?: throw NullPointerException("Bitmap is null!")
+            binding.btnImage.setImageBitmap(selectedImage)
 
-            setViewAndDetect(validBitmap)
+            val validBitmap = selectedImage ?: throw NullPointerException("Bitmap is null!")
+            detectObject(validBitmap)
         }
     }
 
@@ -146,11 +181,11 @@ class AddRoadActivity : AppCompatActivity() {
                     val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
                     val picturePath: String = cursor.getString(columnIndex)
                     val bitmap = BitmapFactory.decodeFile(picturePath)
+                    binding.btnImage.setImageBitmap(bitmap)
                     cursor.close()
 
                     val validBitmap = bitmap ?: throw NullPointerException("Bitmap is null!")
-
-                    setViewAndDetect(validBitmap)
+                    detectObject(validBitmap)
                 }
             }
         }
@@ -268,11 +303,12 @@ class AddRoadActivity : AppCompatActivity() {
     private fun showSearchResults(results: List<Classifier.Recognition>) {
 
         // Create caption, the unclean way
-        val resultString = results
-            .foldIndexed("") { index, acc, recognition ->
-                "${acc}${index+1}. ${recognition.formattedString()}\n"
-            }
-        binding.tvResultData.text = resultString
+            val resultString = results
+                .foldIndexed("") { index, acc, recognition ->
+                    "${acc}${index}. ${recognition.formattedString()}\n"
+                }
+            binding.tvResultData.text = resultString
     }
+
 
 }
