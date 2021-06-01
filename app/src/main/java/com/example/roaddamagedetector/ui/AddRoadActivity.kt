@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.roaddamagedetector.R
 import com.example.roaddamagedetector.data.local.RoadDataEntity
@@ -26,6 +27,7 @@ import com.example.roaddamagedetector.tflite.DetectionResult
 import com.example.roaddamagedetector.tflite.imageclassification.Classifier
 import com.example.roaddamagedetector.tflite.imageclassification.ClassifierHelper
 import com.example.roaddamagedetector.tflite.imageclassification.ClassifierSpec
+import com.example.roaddamagedetector.viewmodel.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -65,7 +67,8 @@ class AddRoadActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Add Data"
 
-        val viewModel: AddRoadViewModel by viewModels()
+        val factory = ViewModelFactory.getInstance(application)
+        val viewModel : AddRoadViewModel = ViewModelProvider(this, factory)[AddRoadViewModel::class.java]
 
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->

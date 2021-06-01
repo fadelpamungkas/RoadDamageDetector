@@ -28,8 +28,8 @@ class ViewModelFactory(private val appRepository: AppRepository): ViewModelProvi
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
-            modelClass.isAssignableFrom(AddRoadActivity::class.java) -> {
-                AddRoadViewModel() as T
+            modelClass.isAssignableFrom(AddRoadViewModel::class.java) -> {
+                AddRoadViewModel(appRepository) as T
             }
             else -> throw Throwable("Unknown ViewModel class: " + modelClass.name)
         }
