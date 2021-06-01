@@ -4,18 +4,14 @@ import android.Manifest
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.*
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,14 +25,10 @@ import com.example.roaddamagedetector.tflite.imageclassification.Classifier
 import com.example.roaddamagedetector.tflite.imageclassification.ClassifierHelper
 import com.example.roaddamagedetector.tflite.imageclassification.ClassifierSpec
 import kotlinx.coroutines.Dispatchers
-import com.example.roaddamagedetector.tflite.Classifier
-import com.example.roaddamagedetector.tflite.ClassifierHelper
-import com.example.roaddamagedetector.tflite.ClassifierSpec
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.Month
 import java.util.*
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.vision.detector.ObjectDetector
@@ -46,8 +38,6 @@ import org.tensorflow.lite.task.vision.detector.ObjectDetector
 @ExperimentalCoroutinesApi
 class AddRoadActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddRoadBinding
-
-    private var inputBitmap: Bitmap? = null
 
     private var cal = Calendar.getInstance()
 
@@ -128,7 +118,7 @@ class AddRoadActivity : AppCompatActivity() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         builder.setTitle("Add Image")
 
-        builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
+        builder.setItems(options) { dialog, item ->
             when (options[item]) {
                 "Take Photo" ->
                     requestPermissionCamera.launch(Manifest.permission.CAMERA)
@@ -137,7 +127,7 @@ class AddRoadActivity : AppCompatActivity() {
                 else ->
                     dialog.dismiss()
             }
-        })
+        }
         builder.show()
     }
 
@@ -160,10 +150,9 @@ class AddRoadActivity : AppCompatActivity() {
     private var resultTakePhoto = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val selectedImage = result.data?.extras?.get("data") as Bitmap?
-            binding.btnImage.setImageBitmap(selectedImage)
-
             val validBitmap = selectedImage ?: throw NullPointerException("Bitmap is null!")
-            detectObject(validBitmap)
+
+            setViewAndDetect(validBitmap)
         }
     }
 
@@ -181,11 +170,10 @@ class AddRoadActivity : AppCompatActivity() {
                     val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
                     val picturePath: String = cursor.getString(columnIndex)
                     val bitmap = BitmapFactory.decodeFile(picturePath)
-                    binding.btnImage.setImageBitmap(bitmap)
                     cursor.close()
 
                     val validBitmap = bitmap ?: throw NullPointerException("Bitmap is null!")
-                    detectObject(validBitmap)
+                    setViewAndDetect(validBitmap)
                 }
             }
         }
