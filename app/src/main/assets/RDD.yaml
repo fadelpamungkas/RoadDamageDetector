@@ -7,4 +7,4 @@ val: ../valid/  # 128 images
 nc: 3
 
 # class names
-names: [ 'ringan', sedang', 'berat', ]
+names: [ 'ringan', 'sedang', 'berat', ]
