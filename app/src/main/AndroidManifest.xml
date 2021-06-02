@@ -4,7 +4,7 @@
 
     <uses-feature android:name="android.hardware.camera.any" />
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadDamageDetector">
+        <activity android:name=".ui.DetailRoadActivity"></activity>
         <activity android:name=".ui.AddRoadActivity" />
         <activity android:name=".ui.CameraActivity" />
         <activity android:name=".ui.MainActivity">

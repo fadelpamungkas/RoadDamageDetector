@@ -44,7 +44,8 @@ android {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.firebase:firebase-firestore:23.0.0'
+    implementation 'com.google.firebase:firebase-storage:20.0.0'
+
     def camerax_version = "1.1.0-alpha04"
     def retrofit2_version = '2.9.0'
     def okhttp3_version = '4.9.1'
@@ -52,6 +53,8 @@ dependencies {
 
     def kotlin_coroutines_version = "1.4.1"
     def lifecycle_version = "2.3.1"
+
+    def firestore = "23.0.0"
 
 
     // Tflite
@@ -63,6 +66,9 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite-task-vision:0.2.0'
 
     implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
+
+    // Firebase-Firestore db
+    implementation "com.google.firebase:firebase-firestore-ktx:${firestore}"
 
     // room
     implementation "androidx.room:room-runtime:${room_version}"

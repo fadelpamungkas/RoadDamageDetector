@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,6 +30,10 @@ import com.example.roaddamagedetector.tflite.imageclassification.ClassifierHelpe
 import com.example.roaddamagedetector.tflite.imageclassification.ClassifierSpec
 import com.example.roaddamagedetector.viewmodel.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -67,6 +72,8 @@ class AddRoadActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Add Data"
 
+        val db : FirebaseFirestore = FirebaseFirestore.getInstance()
+        val storageDb : FirebaseStorage = FirebaseStorage.getInstance()
         val factory = ViewModelFactory.getInstance(application)
         val viewModel : AddRoadViewModel = ViewModelProvider(this, factory)[AddRoadViewModel::class.java]
 
@@ -116,18 +123,24 @@ class AddRoadActivity : AppCompatActivity() {
         binding.btnImage.setOnClickListener {
             selectImage(this)
         }
-
         binding.btnAdd.setOnClickListener {
             if(isDataValid()) {
                 val data = RoadDataEntity(
                     1, "fadel", "email",
                     binding.btnImage.drawable.toString(),
-                    binding.tvDate.toString(),
-                    binding.etAddress.editText.toString(),
-                    binding.etCity.editText.toString(),
-                    binding.etNote.editText.toString(),
+                    binding.tvDate.text.toString(),
+                    binding.etAddress.editText?.text.toString(),
+                    binding.etCity.editText?.text.toString(),
+                    binding.etNote.editText?.text.toString(),
                 )
                 viewModel.insertSingleData(data)
+                db.collection("database-jalan").add(data).addOnSuccessListener {documentReference ->
+                    Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
+
+
+                }.addOnFailureListener {
+                    Log.w(TAG, "Tidak berhasil")
+                }
             }
         }
 
