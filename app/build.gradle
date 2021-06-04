@@ -58,7 +58,6 @@ dependencies {
 
 
     // Tflite
-    final tfliteVersion = '0.0.0-nightly'
     implementation "org.tensorflow:tensorflow-lite:2.4.0"
     implementation "org.tensorflow:tensorflow-lite-gpu:2.3.0"
     implementation "org.tensorflow:tensorflow-lite-support:0.2.0"

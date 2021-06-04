@@ -1,9 +1,31 @@
 package com.example.roaddamagedetector.utils
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import com.example.roaddamagedetector.data.local.RoadDataEntity
 import com.example.roaddamagedetector.data.remote.RoadDataResponse
+import java.io.ByteArrayOutputStream
 
 object DataMapper {
+
+    fun mapBitmapToUri(context: Context, bitmap: Bitmap, title: String = "Title"): Uri {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, title, null)
+        return Uri.parse(path.toString())
+    }
+
+    fun mapUriToBitmap(context: Context, uri: Uri): Bitmap {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
+        } else {
+            MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+        }
+    }
 
     fun mapResponseToEntitiesList(input: List<RoadDataResponse>): List<RoadDataEntity> {
         val list = ArrayList<RoadDataEntity>()

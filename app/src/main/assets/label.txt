@@ -1,0 +1,5 @@
+Ringan
+Sedang
+Berat
+Retak Ringan
+Retak Berat

@@ -2,6 +2,7 @@ package com.example.roaddamagedetector.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.roaddamagedetector.R
 
 class DetailRoadActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
