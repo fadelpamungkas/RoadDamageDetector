@@ -9,6 +9,7 @@ import android.database.Cursor
 import android.graphics.*
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,7 +17,6 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -25,40 +25,48 @@ import com.example.roaddamagedetector.R
 import com.example.roaddamagedetector.data.local.RoadDataEntity
 import com.example.roaddamagedetector.databinding.ActivityAddRoadBinding
 import com.example.roaddamagedetector.tflite.DetectionResult
-import com.example.roaddamagedetector.tflite.imageclassification.Classifier
-import com.example.roaddamagedetector.tflite.imageclassification.ClassifierHelper
-import com.example.roaddamagedetector.tflite.imageclassification.ClassifierSpec
+import com.example.roaddamagedetector.tflite.customview.OverlayView
+import com.example.roaddamagedetector.tflite.env.ImageUtils
+import com.example.roaddamagedetector.tflite.env.Logger
+import com.example.roaddamagedetector.tflite.env.Utils
+import com.example.roaddamagedetector.tflite.tflite.Classifier
+import com.example.roaddamagedetector.tflite.tflite.YoloV4Classifier
+import com.example.roaddamagedetector.tflite.tracking.MultiBoxTracker
 import com.example.roaddamagedetector.viewmodel.ViewModelFactory
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.vision.detector.ObjectDetector
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class AddRoadActivity : AppCompatActivity() {
+open class AddRoadActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddRoadBinding
 
-    private var cal = Calendar.getInstance()
+    private val LOGGER: Logger = Logger()
 
-    private val classifier by lazy {
-        ClassifierHelper(this, ClassifierSpec(
-            Classifier.Model.QUANTIZED_EFFICIENTNET,
-            Classifier.Device.CPU,
-            1
-        )
-        )
-    }
+    private val TF_OD_API_INPUT_SIZE = 416
+    private val MINIMUM_CONFIDENCE_TF_OD_API = 0.5f
+    private val TF_OD_API_IS_QUANTIZED = false
+    private val TF_OD_API_MODEL_FILE = "RDD.tflite"
+    private val TF_OD_API_LABELS_FILE = "file:///android_asset/label.txt"
+
+    private val MAINTAIN_ASPECT = false
+    private val sensorOrientation = 90
+
+    private lateinit var detector: Classifier
+
+    protected var previewWidth = TF_OD_API_INPUT_SIZE
+    protected var previewHeight = TF_OD_API_INPUT_SIZE
+
+    private var cal = Calendar.getInstance()
 
     companion object {
         const val TAG = "TFLite - ODT"
@@ -77,6 +85,7 @@ class AddRoadActivity : AppCompatActivity() {
         val factory = ViewModelFactory.getInstance(application)
         val viewModel : AddRoadViewModel = ViewModelProvider(this, factory)[AddRoadViewModel::class.java]
 
+        initBox()
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
@@ -129,9 +138,9 @@ class AddRoadActivity : AppCompatActivity() {
                     1, "fadel", "email",
                     binding.btnImage.drawable.toString(),
                     binding.tvDate.text.toString(),
-                    binding.etAddress.editText?.text.toString(),
-                    binding.etCity.editText?.text.toString(),
-                    binding.etNote.editText?.text.toString(),
+                    binding.edAddress.text.toString(),
+                    binding.edPlace.text.toString(),
+                    binding.edNote.text.toString(),
                 )
                 viewModel.insertSingleData(data)
                 db.collection("database-jalan").add(data).addOnSuccessListener {documentReference ->
@@ -244,9 +253,62 @@ class AddRoadActivity : AppCompatActivity() {
 //        tvPlaceholder.visibility = View.INVISIBLE
 
         // Run ODT and display result\
-        lifecycleScope.launch(Dispatchers.Default) {
-            runObjectDetection(bitmap)
+//        lifecycleScope.launch(Dispatchers.Default) {
+//            runObjectDetection(bitmap)
+//        }
+
+        val cropBitmap = Utils.processBitmap(bitmap, TF_OD_API_INPUT_SIZE)
+        val handler = Handler()
+
+        Thread {
+            val results: List<Classifier.Recognition> = detector.recognizeImage(cropBitmap)
+            handler.post { handleResult(cropBitmap, results) }
+        }.start()
+
+        binding.btnImage.setImageBitmap(cropBitmap)
+    }
+
+    private fun initBox() {
+        val frameToCropTransform = ImageUtils.getTransformationMatrix(
+            previewWidth, previewHeight,
+            TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE,
+            sensorOrientation, MAINTAIN_ASPECT
+        )
+        val cropToFrameTransform = Matrix()
+        frameToCropTransform.invert(cropToFrameTransform)
+        val tracker = MultiBoxTracker(this)
+//        trackingOverlay = findViewById(R.id.tracking_overlay)
+//        trackingOverlay.addCallback { canvas -> tracker.draw(canvas) }
+        tracker.setFrameConfiguration(TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE, sensorOrientation)
+        try {
+            detector = YoloV4Classifier.create(
+                assets,
+                TF_OD_API_MODEL_FILE,
+                TF_OD_API_LABELS_FILE,
+                TF_OD_API_IS_QUANTIZED
+            )
+        } catch (e: IOException) {
+            e.printStackTrace()
+            LOGGER.e(e, "Exception initializing classifier!")
+            Toast.makeText(applicationContext, "Classifier could not be initialized", Toast.LENGTH_SHORT).show()
+            finish()
         }
+    }
+
+    private fun handleResult(bitmap: Bitmap, results: List<Classifier.Recognition>) {
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+        paint.color = Color.RED
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 2.0f
+
+        for (result in results) {
+            val location: RectF = result.location
+            if (result.confidence >= MINIMUM_CONFIDENCE_TF_OD_API) {
+                canvas.drawRect(location, paint)
+            }
+        }
+        binding.btnImage.setImageBitmap(bitmap)
     }
 
     private fun runObjectDetection(bitmap: Bitmap) {
@@ -260,7 +322,7 @@ class AddRoadActivity : AppCompatActivity() {
             .build()
         val detector = ObjectDetector.createFromFileAndOptions(
             this,
-            "salad.tflite",
+            "RDD.tflite",
             options
         )
 
@@ -321,41 +383,10 @@ class AddRoadActivity : AppCompatActivity() {
         return outputBitmap
     }
 
-
-
     private fun getSampleImage(drawable: Int): Bitmap {
         return BitmapFactory.decodeResource(resources, drawable, BitmapFactory.Options().apply {
             inMutable = true
         })
     }
-
-    private fun detectObject(bitmap: Bitmap) {
-
-        // Where the magic happen
-        classifier.execute(
-            bitmap = bitmap,
-            onError = {
-                Toast.makeText(
-                    this,
-                    "Error regarding GPU support for Quant models[CHAR_LIMIT=60]",
-                    Toast.LENGTH_LONG
-                ).show()
-            },
-            onResult = {
-                showSearchResults(it)
-            }
-        )
-    }
-
-    private fun showSearchResults(results: List<Classifier.Recognition>) {
-
-        // Create caption, the unclean way
-            val resultString = results
-                .foldIndexed("") { index, acc, recognition ->
-                    "${acc}${index}. ${recognition.formattedString()}\n"
-                }
-            binding.tvResultData.text = resultString
-    }
-
 
 }

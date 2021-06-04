@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1003873387461",
+    "project_id": "deft-epoch-312513",
+    "storage_bucket": "deft-epoch-312513.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003873387461:android:9c9e288bbaea0f191801ac",
+        "android_client_info": {
+          "package_name": "com.example.roaddamagedetector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1003873387461-p342tb1d95mlgp5k3mr6lu40bl852j12.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCha_ualBujvkhmZGjYDtgtu1BSBuPTac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1003873387461-p342tb1d95mlgp5k3mr6lu40bl852j12.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
