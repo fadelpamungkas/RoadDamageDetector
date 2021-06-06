@@ -19,22 +19,25 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.roaddamagedetector.R
 import com.example.roaddamagedetector.data.local.RoadDataEntity
 import com.example.roaddamagedetector.databinding.ActivityAddRoadBinding
 import com.example.roaddamagedetector.tflite.DetectionResult
-import com.example.roaddamagedetector.tflite.customview.OverlayView
 import com.example.roaddamagedetector.tflite.env.ImageUtils
 import com.example.roaddamagedetector.tflite.env.Logger
 import com.example.roaddamagedetector.tflite.env.Utils
 import com.example.roaddamagedetector.tflite.tflite.Classifier
 import com.example.roaddamagedetector.tflite.tflite.YoloV4Classifier
 import com.example.roaddamagedetector.tflite.tracking.MultiBoxTracker
+import com.example.roaddamagedetector.utils.DataMapper
 import com.example.roaddamagedetector.viewmodel.ViewModelFactory
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -80,8 +83,8 @@ open class AddRoadActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Add Data"
 
-        val db : FirebaseFirestore = FirebaseFirestore.getInstance()
-        val storageDb : FirebaseStorage = FirebaseStorage.getInstance()
+//        val db : FirebaseFirestore = FirebaseFirestore.getInstance()
+//        val storageDb : StorageReference = FirebaseStorage.getInstance().getReference("Road_Photo")
         val factory = ViewModelFactory.getInstance(application)
         val viewModel : AddRoadViewModel = ViewModelProvider(this, factory)[AddRoadViewModel::class.java]
 
@@ -134,22 +137,29 @@ open class AddRoadActivity : AppCompatActivity() {
         }
         binding.btnAdd.setOnClickListener {
             if(isDataValid()) {
+                val uri = DataMapper.mapBitmapToUri(this, binding.btnImage.drawable.toBitmap())
                 val data = RoadDataEntity(
-                    1, "fadel", "email",
-                    binding.btnImage.drawable.toString(),
+                    2, "fadel", "email",
+                    uri.toString(),
                     binding.tvDate.text.toString(),
                     binding.edAddress.text.toString(),
                     binding.edPlace.text.toString(),
                     binding.edNote.text.toString(),
                 )
                 viewModel.insertSingleData(data)
-                db.collection("database-jalan").add(data).addOnSuccessListener {documentReference ->
-                    Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
-
-
-                }.addOnFailureListener {
-                    Log.w(TAG, "Tidak berhasil")
-                }
+//                val uri = DataMapper.mapBitmapToUri(this, binding.btnImage.drawable.toBitmap(), data.photo)
+                viewModel.save(data)
+//                storageDb.child(data.photo).putFile(uri)
+//                    .addOnCompleteListener {
+//                        db.collection("database-jalan").add(data)
+//                            .addOnSuccessListener {documentReference ->
+//                            Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
+//                        }.addOnFailureListener {
+//                            Log.w(TAG, "Tidak berhasil")
+//                    }
+//                }.addOnFailureListener {
+//
+//                }
             }
         }
 
