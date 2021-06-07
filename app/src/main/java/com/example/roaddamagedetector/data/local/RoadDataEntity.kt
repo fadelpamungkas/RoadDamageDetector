@@ -1,8 +1,11 @@
 package com.example.roaddamagedetector.data.local
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "roaddata", primaryKeys = ["id"])
 data class RoadDataEntity(
 
@@ -29,4 +32,4 @@ data class RoadDataEntity(
 
     @ColumnInfo(name = "note")
     val note: String
-)
+) : Parcelable

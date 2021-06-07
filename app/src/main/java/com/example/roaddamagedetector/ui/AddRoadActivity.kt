@@ -162,7 +162,7 @@ open class AddRoadActivity : AppCompatActivity() {
                                     binding.edPlace.text.toString(),
                                     binding.edNote.text.toString(),
                                 )
-                                viewModel.insertSingleData(data)
+//                                viewModel.insertSingleData(data)
                                 viewModel.save(data)
                             }
                         }

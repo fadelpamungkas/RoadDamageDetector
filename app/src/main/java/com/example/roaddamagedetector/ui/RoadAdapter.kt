@@ -1,5 +1,6 @@
 package com.example.roaddamagedetector.ui
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,11 @@ class RoadAdapter : RecyclerView.Adapter<RoadAdapter.CardViewViewHolder>() {
 
     override fun onBindViewHolder(holder: CardViewViewHolder, position: Int) {
         holder.bind(listData[position])
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(it.context, DetailRoadActivity::class.java)
+            intent.putExtra(DetailRoadActivity.EXTRA_PARCEL, listData[position])
+            it.context.startActivity(intent) }
     }
 
     override fun getItemCount(): Int = listData.size
