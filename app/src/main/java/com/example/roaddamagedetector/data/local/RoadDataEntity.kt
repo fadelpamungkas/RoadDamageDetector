@@ -7,7 +7,7 @@ import androidx.room.Entity
 data class RoadDataEntity(
 
     @ColumnInfo(name = "id")
-    var id: Int,
+    var id: String,
 
     @ColumnInfo(name = "username")
     val username: String,

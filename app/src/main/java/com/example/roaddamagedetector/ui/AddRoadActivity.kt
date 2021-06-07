@@ -34,6 +34,7 @@ import com.example.roaddamagedetector.tflite.tflite.YoloV4Classifier
 import com.example.roaddamagedetector.tflite.tracking.MultiBoxTracker
 import com.example.roaddamagedetector.utils.DataMapper
 import com.example.roaddamagedetector.viewmodel.ViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -52,6 +53,9 @@ import java.util.*
 @ExperimentalCoroutinesApi
 open class AddRoadActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddRoadBinding
+
+    private var firestore : FirebaseFirestore = FirebaseFirestore.getInstance()
+    private var firebaseAuth : FirebaseAuth = FirebaseAuth.getInstance()
 
     private val LOGGER: Logger = Logger()
 
@@ -100,6 +104,8 @@ open class AddRoadActivity : AppCompatActivity() {
                 binding.tvDate.text = sdf.format(cal.time)
             }
 
+        val user = firebaseAuth.currentUser
+
         binding.edPlace.addTextChangedListener ( object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -138,17 +144,30 @@ open class AddRoadActivity : AppCompatActivity() {
         }
         binding.btnAdd.setOnClickListener {
             if(isDataValid()) {
-                val uri = DataMapper.mapBitmapToUri(this, binding.btnImage.drawable.toBitmap())
-                val data = RoadDataEntity(
-                    3, "Billy", "email",
-                    uri.toString(),
-                    binding.tvDate.text.toString(),
-                    binding.edAddress.text.toString(),
-                    binding.edPlace.text.toString(),
-                    binding.edNote.text.toString(),
-                )
-                viewModel.insertSingleData(data)
-                viewModel.save(data)
+                if (user != null) {
+                    firestore.collection("users").document(user.uid).get()
+                        .addOnSuccessListener{listener ->
+                            if (listener != null) {
+                                Log.d("DocumentChange","${listener.id}=>${listener.data}")
+                                val name = listener.data?.get("name").toString()
+                                val email = listener.data?.get("email").toString()
+                                val uri = DataMapper.mapBitmapToUri(this, binding.btnImage.drawable.toBitmap())
+                                val data = RoadDataEntity(
+                                    user.uid,
+                                    name,
+                                    email,
+                                    uri.toString(),
+                                    binding.tvDate.text.toString(),
+                                    binding.edAddress.text.toString(),
+                                    binding.edPlace.text.toString(),
+                                    binding.edNote.text.toString(),
+                                )
+                                viewModel.insertSingleData(data)
+                                viewModel.save(data)
+                            }
+                        }
+                }
+
             }
         }
 

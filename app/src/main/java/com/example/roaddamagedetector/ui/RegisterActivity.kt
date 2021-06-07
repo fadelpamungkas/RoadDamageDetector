@@ -163,7 +163,6 @@ class RegisterActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG
                             ).show()
                             startActivity(Intent(this,LoginActivity::class.java))
-                            finish()
                         } else {
                             //display some message here
                             Toast.makeText(
@@ -172,6 +171,7 @@ class RegisterActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG
                             ).show()
                         }
+                        finish()
                     }
             }
         } else {

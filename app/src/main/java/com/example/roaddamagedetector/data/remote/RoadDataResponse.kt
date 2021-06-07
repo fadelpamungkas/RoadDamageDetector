@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class RoadDataResponse(
 
     @SerializedName("id")
-    val id: Int,
+    val id: String,
 
     @SerializedName("username")
     val username: String,

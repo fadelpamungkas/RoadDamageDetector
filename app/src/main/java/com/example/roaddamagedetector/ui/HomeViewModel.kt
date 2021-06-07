@@ -21,7 +21,7 @@ class HomeViewModel: ViewModel() {
                     for (documentChange in listener.documentChanges) {
                         Log.d("DocumentChange","${documentChange.document.id}=>${documentChange.document.data}")
                         val data = RoadDataEntity(
-                            Integer.parseInt(documentChange.document.data["id"].toString()),
+                            documentChange.document.data["id"].toString(),
                             documentChange.document.data["username"].toString(),
                             documentChange.document.data["email"].toString(),
                             documentChange.document.data["photo"].toString(),
