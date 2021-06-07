@@ -1,6 +1,7 @@
 package com.example.roaddamagedetector.ui
 
 import android.R.attr.password
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,8 +10,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.roaddamagedetector.R
+import com.example.roaddamagedetector.data.local.UserEntity
 import com.example.roaddamagedetector.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class RegisterActivity : AppCompatActivity() {
@@ -20,6 +23,7 @@ class RegisterActivity : AppCompatActivity() {
     private var passwordConfirmationValid = false
 
     private var firebaseAuth: FirebaseAuth? = null
+    private lateinit var firestore: FirebaseFirestore
 
     lateinit var binding: ActivityRegisterBinding
 
@@ -28,7 +32,8 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
 
         validateButton()
 
@@ -140,12 +145,25 @@ class RegisterActivity : AppCompatActivity() {
                         this
                     ) { task -> //checking if success
                         if (task.isSuccessful) {
+                            val user =
+                                UserEntity(
+                                    firebaseAuth!!.uid.toString(),
+                                    binding.edEmail.text.toString(),
+                                    binding.edName.text.toString(),
+                                    binding.edPassword.text.toString(),
+                                    binding.edConfirmPassword.text.toString(),
+                                    ""
+                                )
+                            firestore.collection("users").document(user.id).set(user)
+
                             //display some message here
                             Toast.makeText(
                                 this,
                                 "Successfully registered",
                                 Toast.LENGTH_LONG
                             ).show()
+                            startActivity(Intent(this,LoginActivity::class.java))
+                            finish()
                         } else {
                             //display some message here
                             Toast.makeText(

@@ -39,4 +39,9 @@
     <string name="invalid_confirm_password">Password not same</string>
     <string name="login_failed">"Login failed"</string>
 
+    <string name="account">"Don't have a account? Register"</string>
+
+    <string name="login_email">"Wrong Email"</string>
+    <string name="login_password">"Wrong Password"</string>
+
 </resources>

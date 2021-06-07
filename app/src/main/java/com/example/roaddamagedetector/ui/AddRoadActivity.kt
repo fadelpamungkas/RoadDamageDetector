@@ -105,6 +105,7 @@ open class AddRoadActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -139,7 +140,7 @@ open class AddRoadActivity : AppCompatActivity() {
             if(isDataValid()) {
                 val uri = DataMapper.mapBitmapToUri(this, binding.btnImage.drawable.toBitmap())
                 val data = RoadDataEntity(
-                    2, "fadel", "email",
+                    3, "Billy", "email",
                     uri.toString(),
                     binding.tvDate.text.toString(),
                     binding.edAddress.text.toString(),
@@ -147,19 +148,7 @@ open class AddRoadActivity : AppCompatActivity() {
                     binding.edNote.text.toString(),
                 )
                 viewModel.insertSingleData(data)
-//                val uri = DataMapper.mapBitmapToUri(this, binding.btnImage.drawable.toBitmap(), data.photo)
                 viewModel.save(data)
-//                storageDb.child(data.photo).putFile(uri)
-//                    .addOnCompleteListener {
-//                        db.collection("database-jalan").add(data)
-//                            .addOnSuccessListener {documentReference ->
-//                            Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
-//                        }.addOnFailureListener {
-//                            Log.w(TAG, "Tidak berhasil")
-//                    }
-//                }.addOnFailureListener {
-//
-//                }
             }
         }
 

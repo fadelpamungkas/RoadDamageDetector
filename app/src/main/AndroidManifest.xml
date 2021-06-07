@@ -15,16 +15,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadDamageDetector">
-        <activity android:name=".ui.RegisterActivity"/>
-        <activity android:name=".ui.DetailRoadActivity" />
-        <activity android:name=".ui.AddRoadActivity" />
-        <activity android:name=".ui.CameraActivity" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".ui.RegisterActivity" />
+        <activity android:name=".ui.DetailRoadActivity" />
+        <activity android:name=".ui.AddRoadActivity" />
+        <activity android:name=".ui.CameraActivity" />
+        <activity android:name=".ui.MainActivity">
+
         </activity>
     </application>
 
