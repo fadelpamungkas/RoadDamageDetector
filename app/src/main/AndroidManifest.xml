@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadDamageDetector">
-        <activity android:name=".ui.DetailRoadActivity"></activity>
+        <activity android:name=".ui.RegisterActivity"/>
+        <activity android:name=".ui.DetailRoadActivity" />
         <activity android:name=".ui.AddRoadActivity" />
         <activity android:name=".ui.CameraActivity" />
         <activity android:name=".ui.MainActivity">

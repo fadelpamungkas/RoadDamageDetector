@@ -44,7 +44,9 @@ android {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.firebase:firebase-storage:20.0.0'
+
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
 
     def camerax_version = "1.1.0-alpha04"
     def retrofit2_version = '2.9.0'
@@ -55,6 +57,8 @@ dependencies {
     def lifecycle_version = "2.3.1"
 
     def firestore = "23.0.0"
+    def firebase_storage = "20.0.0"
+    def firebase_auth = "21.0.1"
 
     def glide_version = "4.11.0"
 
@@ -68,8 +72,10 @@ dependencies {
 
     implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
 
-    // Firebase-Firestore db
+    // Firebase
     implementation "com.google.firebase:firebase-firestore-ktx:${firestore}"
+    implementation "com.google.firebase:firebase-storage:${firebase_storage}"
+    implementation "com.google.firebase:firebase-auth-ktx:${firebase_auth}"
 
     // Glide
     implementation "com.github.bumptech.glide:glide:$glide_version"

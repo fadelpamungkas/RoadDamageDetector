@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">RoadDamageDetector</string>
 
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+
     <string name="photo">Photo</string>
     <string name="name">Name</string>
     <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+
     <string name="edit_profile">Edit Profile</string>
 
     <string name="tittle">Tittle</string>
@@ -23,5 +29,14 @@
     <string name="settings">Settings</string>
     <string name="capture">Capture</string>
     <string name="add_image">Add Image</string>
+
+    <string name="reporter">Report by</string>
+    <string name="date">Date</string>
+
+    <string name="invalid_email">Not a valid Email</string>
+    <string name="invalid_name">Name must be character</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_confirm_password">Password not same</string>
+    <string name="login_failed">"Login failed"</string>
 
 </resources>
