@@ -7,6 +7,7 @@ import com.example.roaddamagedetector.data.AppRepository
 import com.example.roaddamagedetector.di.Inject
 import com.example.roaddamagedetector.ui.AddRoadActivity
 import com.example.roaddamagedetector.ui.AddRoadViewModel
+import com.example.roaddamagedetector.ui.HomeViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -30,6 +31,9 @@ class ViewModelFactory(private val appRepository: AppRepository): ViewModelProvi
         return when {
             modelClass.isAssignableFrom(AddRoadViewModel::class.java) -> {
                 AddRoadViewModel(appRepository) as T
+            }
+            modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
+                HomeViewModel() as T
             }
             else -> throw Throwable("Unknown ViewModel class: " + modelClass.name)
         }

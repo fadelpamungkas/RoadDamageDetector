@@ -3,7 +3,6 @@ package com.example.roaddamagedetector.ui
 import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.example.roaddamagedetector.BuildConfig
@@ -11,7 +10,6 @@ import com.example.roaddamagedetector.data.AppRepository
 import com.example.roaddamagedetector.data.local.RoadDataEntity
 import com.example.roaddamagedetector.data.remote.ApiConfig
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -77,7 +75,7 @@ class AddRoadViewModel(private val appRepository: AppRepository) : ViewModel() {
         road: RoadDataEntity
     ) {
         val document =
-            if (!road.id.toString().isEmpty()) {
+            if (road.id.toString().isNotEmpty()) {
                 // updating existing
                 firestore.collection("roadDatabase").document(road.id.toString())
             } else {
