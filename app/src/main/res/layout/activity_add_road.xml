@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     tools:context=".ui.AddRoadActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,8 +23,8 @@
 
         <ImageButton
             android:id="@+id/btnImage"
-            android:layout_width="416dp"
-            android:layout_height="416dp"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_image_button"
             android:contentDescription="@string/add_image"

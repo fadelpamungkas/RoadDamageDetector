@@ -1,5 +1,6 @@
 package com.example.roaddamagedetector.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -45,6 +46,11 @@ class ProfileFragment : Fragment() {
                         binding.dtTvEmail.text = listener.data?.get("email").toString()
                     }
                 }
+        }
+
+        binding.btnLogout.setOnClickListener {
+            firebaseAuth.signOut()
+            startActivity(Intent(activity?.application,LoginActivity::class.java))
         }
     }
 }

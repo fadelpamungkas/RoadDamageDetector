@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.example.roaddamagedetector.R
 import com.example.roaddamagedetector.data.local.UserEntity
@@ -31,6 +32,8 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         firebaseAuth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
@@ -138,7 +141,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun validateButton() {
         if (emailValid && passwordValid && passwordConfirmationValid) {
             binding.btnRegister.isEnabled = true
-            binding.btnRegister.setBackgroundColor(ContextCompat.getColor(this, R.color.purple_500))
+            binding.btnRegister.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
             binding.btnRegister.setOnClickListener {
                 firebaseAuth!!.createUserWithEmailAndPassword(binding.edEmail.text.toString(), binding.edPassword.text.toString())
                     .addOnCompleteListener(

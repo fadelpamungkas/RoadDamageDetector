@@ -8,7 +8,7 @@
     tools:context=".ui.ProfileFragment">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnEditProfile"
+        android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
@@ -16,15 +16,15 @@
         app:fabSize="normal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_baseline_edit_24"
-        android:contentDescription="@string/edit_profile"
+        android:src="@drawable/ic_baseline_exit_to_app_24"
+        android:contentDescription="@string/logout"
         tools:ignore="MissingConstraints" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clAtas"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:background="@color/black"
+        android:background="@color/grey_icon"
         tools:ignore="MissingConstraints">
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/dt_photo"

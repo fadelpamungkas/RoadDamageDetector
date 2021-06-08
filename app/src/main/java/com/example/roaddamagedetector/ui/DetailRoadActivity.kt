@@ -2,6 +2,7 @@ package com.example.roaddamagedetector.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
 import com.example.roaddamagedetector.R
 import com.example.roaddamagedetector.data.local.RoadDataEntity
@@ -18,6 +19,8 @@ class DetailRoadActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailRoadBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         val intentData = intent.getParcelableExtra<RoadDataEntity>(EXTRA_PARCEL)
 

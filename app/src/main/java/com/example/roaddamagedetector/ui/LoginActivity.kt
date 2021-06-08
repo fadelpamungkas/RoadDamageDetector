@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Patterns
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.example.roaddamagedetector.R
 import com.example.roaddamagedetector.databinding.ActivityLoginBinding
@@ -14,9 +15,6 @@ import com.example.roaddamagedetector.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
-    private var emailValid = false
-    private var passwordValid = false
-
     private var firebaseAuth: FirebaseAuth? = null
 
     lateinit var binding: ActivityLoginBinding
@@ -25,6 +23,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
 
         firebaseAuth = FirebaseAuth.getInstance();
 

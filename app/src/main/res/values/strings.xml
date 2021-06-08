@@ -3,6 +3,7 @@
 
     <string name="login">Login</string>
     <string name="register">Register</string>
+    <string name="logout">Logout</string>
 
     <string name="photo">Photo</string>
     <string name="name">Name</string>
