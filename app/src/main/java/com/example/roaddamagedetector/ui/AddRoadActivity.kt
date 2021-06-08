@@ -154,6 +154,7 @@ open class AddRoadActivity : AppCompatActivity() {
 //                                viewModel.insertSingleData(data)
                             Toast.makeText(this, "Data Added", Toast.LENGTH_SHORT).show()
                             viewModel.save(data)
+                            finish()
                         }
                     }
             }

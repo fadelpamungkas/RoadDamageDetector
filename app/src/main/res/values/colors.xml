@@ -13,6 +13,5 @@
     <color name="grey_icon">#565656</color>
     <color name="grey_text">#cbcbcb</color>
     <color name="grey_title">#463f57</color>
-
-
+    <color name="dark_blue">#14274e</color>
 </resources>
