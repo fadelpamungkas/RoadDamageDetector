@@ -2,6 +2,7 @@ package com.example.roaddamagedetector.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
 import com.example.roaddamagedetector.R
@@ -20,6 +21,8 @@ class DetailRoadActivity : AppCompatActivity() {
         binding = ActivityDetailRoadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         val intentData = intent.getParcelableExtra<RoadDataEntity>(EXTRA_PARCEL)
@@ -37,4 +40,13 @@ class DetailRoadActivity : AppCompatActivity() {
             }
         }
     }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            android.R.id.home -> finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 }
