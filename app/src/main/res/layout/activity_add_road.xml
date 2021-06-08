@@ -37,16 +37,6 @@
             app:layout_constraintTop_toBottomOf="@id/tvImage" />
 
         <TextView
-            android:id="@+id/tvResultData"
-            style="@style/TvDetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:layout_constraintTop_toBottomOf="@id/btnImage"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <TextView
             style="@style/TvDate"
             android:id="@+id/tvDate"
             android:layout_width="150dp"
@@ -56,7 +46,7 @@
             android:paddingEnd="20dp"
             android:background="@drawable/rounded_edittext"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvResultData">
+            app:layout_constraintTop_toBottomOf="@id/btnImage">
         </TextView>
 
         <Button
@@ -65,15 +55,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/ic_baseline_calendar_today_24"
-            app:layout_constraintTop_toBottomOf="@id/tvResultData"
+            app:layout_constraintTop_toBottomOf="@id/btnImage"
             app:layout_constraintStart_toEndOf="@id/tvDate"/>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            style="@style/InputLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvDate">
@@ -89,7 +78,7 @@
             android:id="@+id/etCity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            style="@style/InputLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_address">
@@ -106,7 +95,7 @@
             android:id="@+id/et_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            style="@style/InputLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/etCity">

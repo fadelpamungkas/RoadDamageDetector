@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -36,9 +37,6 @@ import com.example.roaddamagedetector.utils.DataMapper
 import com.example.roaddamagedetector.viewmodel.ViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -70,15 +68,10 @@ open class AddRoadActivity : AppCompatActivity() {
 
     private lateinit var detector: Classifier
 
-    protected var previewWidth = TF_OD_API_INPUT_SIZE
-    protected var previewHeight = TF_OD_API_INPUT_SIZE
+    private var previewWidth = TF_OD_API_INPUT_SIZE
+    private var previewHeight = TF_OD_API_INPUT_SIZE
 
     private var cal = Calendar.getInstance()
-
-    companion object {
-        const val TAG = "TFLite - ODT"
-        private const val MAX_FONT_SIZE = 96F
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,12 +80,10 @@ open class AddRoadActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Add Data"
 
-//        val db : FirebaseFirestore = FirebaseFirestore.getInstance()
-//        val storageDb : StorageReference = FirebaseStorage.getInstance().getReference("Road_Photo")
+        val user = firebaseAuth.currentUser
         val factory = ViewModelFactory.getInstance(application)
         val viewModel : AddRoadViewModel = ViewModelProvider(this, factory)[AddRoadViewModel::class.java]
 
-        initBox()
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
@@ -104,21 +95,16 @@ open class AddRoadActivity : AppCompatActivity() {
                 binding.tvDate.text = sdf.format(cal.time)
             }
 
-        val user = firebaseAuth.currentUser
-
         binding.edPlace.addTextChangedListener ( object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {
                 lifecycleScope.launch {
                     viewModel.queryChannel.send(s.toString())
                 }
             }
+
+            override fun afterTextChanged(s: Editable?) {}
         })
 
         viewModel.searchResult.observe(this, { placesItem ->
@@ -140,63 +126,62 @@ open class AddRoadActivity : AppCompatActivity() {
         }
 
         binding.btnImage.setOnClickListener {
+            initBox()
             selectImage(this)
         }
         binding.btnAdd.setOnClickListener {
-            if(isDataValid()) {
-                if (user != null) {
-                    firestore.collection("users").document(user.uid).get()
-                        .addOnSuccessListener{listener ->
-                            if (listener != null) {
-                                Log.d("DocumentChange","${listener.id}=>${listener.data}")
-                                val name = listener.data?.get("name").toString()
-                                val email = listener.data?.get("email").toString()
-                                val uri = DataMapper.mapBitmapToUri(this, binding.btnImage.drawable.toBitmap())
-                                val data = RoadDataEntity(
-                                    user.uid,
-                                    name,
-                                    email,
-                                    uri.toString(),
-                                    binding.tvDate.text.toString(),
-                                    binding.edAddress.text.toString(),
-                                    binding.edPlace.text.toString(),
-                                    binding.edNote.text.toString(),
-                                )
+            if(isDataValid() && user != null) {
+                firestore.collection("users").document(user.uid).get()
+                    .addOnSuccessListener{listener ->
+                        if (listener != null) {
+                            Log.d("DocumentChange","${listener.id}=>${listener.data}")
+                            val name = listener.data?.get("name").toString()
+                            val email = listener.data?.get("email").toString()
+                            val uri = DataMapper.mapBitmapToUri(this, binding.btnImage.drawable.toBitmap())
+                            val data = RoadDataEntity(
+                                user.uid,
+                                name,
+                                email,
+                                uri.toString(),
+                                binding.tvDate.text.toString(),
+                                binding.edAddress.text.toString(),
+                                binding.edPlace.text.toString(),
+                                binding.edNote.text.toString(),
+                            )
 //                                viewModel.insertSingleData(data)
-                                viewModel.save(data)
-                            }
+                            Toast.makeText(this, "Data Added", Toast.LENGTH_SHORT).show()
+                            viewModel.save(data)
                         }
-                }
-
+                    }
             }
         }
-
     }
 
     private fun isDataValid(): Boolean {
+        var isEmptyField = false
         with(binding) {
-            if (btnImage.drawable.equals(null) || btnImage.drawable.equals(R.drawable.add_image)){
+            if (btnImage.resources.equals(R.drawable.add_image) || btnImage.drawable.equals(R.drawable.add_image)){
                 Toast.makeText(this@AddRoadActivity, "Photo can't be blank", Toast.LENGTH_SHORT).show()
-                return false
+                isEmptyField = true
             }
-            if (tvDate.text == null) {
-                Toast.makeText(this@AddRoadActivity, "Date can't be blank", Toast.LENGTH_SHORT).show()
-                return false
+            if (TextUtils.isEmpty(tvDate.text.toString())) {
+                tvDate.error = "Date can't be blank"
+                isEmptyField = true
             }
-            if (etAddress.editText == null) {
-                Toast.makeText(this@AddRoadActivity, "Address can't be blank", Toast.LENGTH_SHORT).show()
-                return false
+            if (TextUtils.isEmpty(edAddress.text.toString())) {
+                edAddress.error = "Address can't be blank"
+                isEmptyField = true
             }
-            if (etCity.editText == null) {
-                Toast.makeText(this@AddRoadActivity, "City can't be blank", Toast.LENGTH_SHORT).show()
-                return false
+            if (TextUtils.isEmpty(edPlace.text.toString())) {
+                edPlace.error = "City can't be blank"
+                isEmptyField = true
             }
-            if (etNote.editText == null) {
-                Toast.makeText(this@AddRoadActivity, "Note can't be blank", Toast.LENGTH_SHORT).show()
-                return false
+            if (TextUtils.isEmpty(edNote.text.toString())) {
+                edNote.error = "note can't be blank"
+                isEmptyField = true
             }
-            return true
         }
+        return !isEmptyField
     }
 
     private fun selectImage(context: Context) {
@@ -268,12 +253,6 @@ open class AddRoadActivity : AppCompatActivity() {
     private fun setViewAndDetect(bitmap: Bitmap) {
         // Display capture image
         binding.btnImage.setImageBitmap(bitmap)
-//        tvPlaceholder.visibility = View.INVISIBLE
-
-        // Run ODT and display result\
-//        lifecycleScope.launch(Dispatchers.Default) {
-//            runObjectDetection(bitmap)
-//        }
 
         val cropBitmap = Utils.processBitmap(bitmap, TF_OD_API_INPUT_SIZE)
         val handler = Handler()
@@ -287,17 +266,15 @@ open class AddRoadActivity : AppCompatActivity() {
     }
 
     private fun initBox() {
-        val frameToCropTransform = ImageUtils.getTransformationMatrix(
-            previewWidth, previewHeight,
-            TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE,
-            sensorOrientation, MAINTAIN_ASPECT
-        )
-        val cropToFrameTransform = Matrix()
-        frameToCropTransform.invert(cropToFrameTransform)
-        val tracker = MultiBoxTracker(this)
-//        trackingOverlay = findViewById(R.id.tracking_overlay)
-//        trackingOverlay.addCallback { canvas -> tracker.draw(canvas) }
-        tracker.setFrameConfiguration(TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE, sensorOrientation)
+//        val frameToCropTransform = ImageUtils.getTransformationMatrix(
+//            previewWidth, previewHeight,
+//            TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE,
+//            sensorOrientation, MAINTAIN_ASPECT
+//        )
+//        val cropToFrameTransform = Matrix()
+//        frameToCropTransform.invert(cropToFrameTransform)
+//        val tracker = MultiBoxTracker(this)
+//        tracker.setFrameConfiguration(TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE, sensorOrientation)
         try {
             detector = YoloV4Classifier.create(
                 assets,
@@ -308,7 +285,6 @@ open class AddRoadActivity : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
             LOGGER.e(e, "Exception initializing classifier!")
-            Toast.makeText(applicationContext, "Classifier could not be initialized", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
@@ -328,83 +304,4 @@ open class AddRoadActivity : AppCompatActivity() {
         }
         binding.btnImage.setImageBitmap(bitmap)
     }
-
-    private fun runObjectDetection(bitmap: Bitmap) {
-        // Step 1: Create TFLite's TensorImage object
-        val image = TensorImage.fromBitmap(bitmap)
-
-        // Step 2: Initialize the detector object
-        val options = ObjectDetector.ObjectDetectorOptions.builder()
-            .setMaxResults(5)
-            .setScoreThreshold(0.3f)
-            .build()
-        val detector = ObjectDetector.createFromFileAndOptions(
-            this,
-            "RDD.tflite",
-            options
-        )
-
-        // Step 3: Feed given image to the detector
-        val results = detector.detect(image)
-
-        // Step 4: Parse the detection result and show it
-        val resultToDisplay = results.map {
-            // Get the top-1 category and craft the display text
-            val category = it.categories.first()
-            val text = "${category.label} - ${category.score.times(100).toInt()}%"
-
-            // Create a data object to display the detection result
-            DetectionResult(it.boundingBox, text)
-        }
-        // Draw the detection result on the bitmap and show it.
-        val imgWithResult = drawDetectionResult(bitmap, resultToDisplay)
-        runOnUiThread {
-            binding.btnImage.setImageBitmap(imgWithResult)
-        }
-    }
-
-    private fun drawDetectionResult(bitmap: Bitmap, detectionResults: List<DetectionResult>): Bitmap {
-        val outputBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
-        val canvas = Canvas(outputBitmap)
-        val pen = Paint()
-        pen.textAlign = Paint.Align.LEFT
-
-        detectionResults.forEach {
-            // draw bounding box
-            pen.color = Color.RED
-            pen.strokeWidth = 4F
-            pen.style = Paint.Style.STROKE
-            val box = it.boundingBox
-            canvas.drawRect(box, pen)
-
-            val tagSize = Rect(0, 0, 0, 0)
-
-            // calculate the right font size
-            pen.style = Paint.Style.FILL_AND_STROKE
-            pen.color = Color.YELLOW
-            pen.strokeWidth = 2F
-
-            pen.textSize = MAX_FONT_SIZE
-            pen.getTextBounds(it.text, 0, it.text.length, tagSize)
-            val fontSize: Float = pen.textSize * box.width() / tagSize.width()
-
-            // adjust the font size so texts are inside the bounding box
-            if (fontSize < pen.textSize) pen.textSize = fontSize
-
-            var margin = (box.width() - tagSize.width()) / 2.0F
-            if (margin < 0F) margin = 0F
-            canvas.drawText(
-                it.text, box.left + margin,
-                box.top + tagSize.height().times(1F), pen
-            )
-        }
-        return outputBitmap
-    }
-
-    private fun getSampleImage(drawable: Int): Bitmap {
-        return BitmapFactory.decodeResource(resources, drawable, BitmapFactory.Options().apply {
-            inMutable = true
-        })
-    }
-
 }
