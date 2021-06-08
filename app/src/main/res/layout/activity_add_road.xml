@@ -36,26 +36,33 @@
             app:layout_constraintTop_toBottomOf="@id/tvImage" />
 
         <TextView
-            style="@style/TvDate"
+            style="@style/TvEmail"
             android:id="@+id/tvDate"
-            android:layout_width="150dp"
-            android:layout_height="30dp"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
+            android:hint="@string/date"
+            android:gravity="center_vertical"
+            app:layout_constraintHorizontal_weight="0.9"
             android:background="@drawable/rounded_edittext"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnDate"
             app:layout_constraintTop_toBottomOf="@id/btnImage">
         </TextView>
 
         <Button
             android:id="@+id/btnDate"
-            android:layout_width="45dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintHorizontal_weight="0.15"
+            android:layout_marginStart="12dp"
             android:background="@drawable/ic_baseline_calendar_today_24"
             app:layout_constraintTop_toBottomOf="@id/btnImage"
-            app:layout_constraintStart_toEndOf="@id/tvDate"/>
+            app:layout_constraintStart_toEndOf="@id/tvDate"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_address"
@@ -108,15 +115,14 @@
 
         <Button
             android:id="@+id/btnAdd"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:background="@drawable/rounded_edittext"
             android:text="@string/add"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_note"
-            tools:ignore="MissingConstraints" />
-
+            app:layout_constraintTop_toBottomOf="@id/et_note"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

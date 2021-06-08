@@ -44,5 +44,6 @@
 
     <string name="login_email">"Wrong Email"</string>
     <string name="login_password">"Wrong Password"</string>
+    <string name="cancel">Cancel</string>
 
 </resources>
